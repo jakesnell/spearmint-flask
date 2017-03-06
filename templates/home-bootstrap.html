@@ -1,0 +1,56 @@
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/sortable/0.8.0/css/sortable-theme-bootstrap.css" />
+		<style>
+			.renderjson a              { text-decoration: none; }
+			.renderjson .disclosure    { color: crimson; font-size: 150%; }
+			.renderjson .syntax        { color: cyan; }
+			.renderjson .string        { color: red; }
+			.renderjson .number        { color: black; }
+			.renderjson .boolean       { color: plum; }
+			.renderjson .key           { color: grey; }
+			.renderjson .keyword       { color: lightgoldenrodyellow; }
+			.renderjson .object.syntax { color: lightseagreen; }
+			.renderjson .array.syntax  { color: lightsalmon; }
+		</style>
+      <title>Spearmint Experiment Monitor</title>
+	</head>
+	<body>
+      <div class="container">
+         <h4>{{experiment.name}}</h4>
+      </div>
+		<div class="container">
+			<table class="table table-bordered sortable-bootstrap" data-sortable>
+				<thead>
+					<tr>
+						<th>Job</th>
+						<th>Value</th>
+						<th data-sortable="false">Parameters</th>
+						<th>Status</th>
+						<th>End Time</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for job in jobs %}
+					<tr>
+						<td> {{ job.id }} </td>
+						<td> {{ job.value }} </td>
+                  <td> <div id="param_{{ job.id }}"/> </td>
+						<td> {{ job.status }} </td>
+                  <td data-value="{{ job.end_time_value }}"> {{ job.end_time }} </td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/sortable/0.8.0/js/sortable.js"></script>
+		<script type="text/javascript" src="/static/renderjson.js"></script>
+      <script> renderjson.set_show_to_level(1); </script>
+		{% for job in jobs %}
+      <script>
+         document.getElementById("param_{{ job.id }}").appendChild(renderjson({{ job.params|tojson|safe }}));
+      </script>
+		{% endfor %}
+	</body>
+</html>
